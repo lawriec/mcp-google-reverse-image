@@ -29,21 +29,41 @@ Billing must still be enabled on the project even if you stay entirely within th
 
 ## Installation
 
-Add to your MCP client config (e.g. `.mcp.json`):
+### 1. Set your API key in the environment
+
+The server reads `GOOGLE_VISION_API_KEY` from the process environment. Set it once in your shell/OS so every MCP client inherits it automatically.
+
+**Windows (PowerShell, persistent):**
+```powershell
+[Environment]::SetEnvironmentVariable("GOOGLE_VISION_API_KEY", "AIza...", "User")
+```
+Then restart your terminal (and your MCP client) so the new variable is picked up.
+
+**Windows (cmd, persistent):**
+```cmd
+setx GOOGLE_VISION_API_KEY "AIza..."
+```
+
+**macOS / Linux (bash/zsh):**
+```bash
+echo 'export GOOGLE_VISION_API_KEY="AIza..."' >> ~/.bashrc   # or ~/.zshrc
+source ~/.bashrc
+```
+
+### 2. Add to your MCP client config
 
 ```json
 {
   "mcpServers": {
     "google-reverse-image": {
       "command": "npx",
-      "args": ["-y", "github:lawriec/mcp-google-reverse-image"],
-      "env": {
-        "GOOGLE_VISION_API_KEY": "AIza..."
-      }
+      "args": ["-y", "github:lawriec/mcp-google-reverse-image"]
     }
   }
 }
 ```
+
+No `env` block is needed — the server inherits `GOOGLE_VISION_API_KEY` from the parent process. If you'd rather scope the key per-project instead of globally, you can still pass it explicitly via an `env` entry.
 
 The `prepare` script builds the TypeScript on install, so the first launch is slightly slower while `tsc` runs. Subsequent launches are instant.
 
